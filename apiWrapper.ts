@@ -1,5 +1,5 @@
 
-let apiurl = "http://54.36.121.173:3012/v1/amazon"
+let apiurl = "https://api.stellarscrape.com/v1/amazon"
 
 
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
@@ -7,7 +7,7 @@ export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
 
 
 export type DefaultApiResponse<T extends string, D> = {
-    status: "success" | "error",
+    status: number
     data: {
         [key in T]: D
     } & {
@@ -177,7 +177,7 @@ export class StellarScrape {
         }
 
         const url = `${apiurl}/products`;
-        console.log(url);
+    
 
         try {
             const response = await fetch(url, {

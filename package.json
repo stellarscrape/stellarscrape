@@ -1,7 +1,7 @@
 {
-  "name": "stellarscrape",
-  "version": "1.0.0",
-  "description": "A simple API wrapper for stellarscrape",
+  "name": "stellarscrape-client",
+  "version": "1.0.01",
+  "description": "The apiWrapper for the StellarScrape API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,18 +9,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/your-api-wrapper"
+    "url": "https://github.com/stellarscrape"
   },
   "keywords": [
     "api",
     "wrapper",
-    "axios"
+    "axios",
+    "scraper",
+    "amazon scraper"
   ],
-  "author": "Your Name",
+  "author": "StellarScrape",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
-    "stellarscrape": "file:stellarscrape-1.0.0.tgz"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
