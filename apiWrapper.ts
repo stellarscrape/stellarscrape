@@ -5,7 +5,7 @@ let apiurl = "https://api.stellarscrape.com/v1/amazon"
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
 
 
-
+export type ImageQuality = "small" | "medium" | "large" | "full" |number
 export type DefaultApiResponse<T extends string, D> = {
     status: number
     data: {
@@ -127,18 +127,18 @@ export class StellarScrape {
    * @param fromcountry The country of origin
    * @returns A promise resolving to the product data
    */
-    async  searchAmazonProducts(
-        query: string, 
-        countries: supportedCountry[], 
-        userCountry: supportedCountry, 
-        amount?: number, 
+    async searchAmazonProducts(
+        query: string,
+        countries: supportedCountry[],
+        userCountry: supportedCountry,
+        amount?: number,
         startAt?: number
-      ): Promise<DefaultApiResponse<'searchData', searchData>> {
+    ): Promise<DefaultApiResponse<'searchData', searchData>> {
         // Set default values inside the function if not provided
         amount = amount ?? 10;
         startAt = startAt ?? 0;
 
-        
+
         const url = `${apiurl}/search`;
         try {
             const response = await fetch(url, {
@@ -147,7 +147,7 @@ export class StellarScrape {
                     "Authorization": this.apikey,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query, countries, userCountry , amount, startAt}),
+                body: JSON.stringify({ query, countries, userCountry, amount, startAt }),
             });
             const data = await response.json();
             return data;
@@ -177,7 +177,7 @@ export class StellarScrape {
         }
 
         const url = `${apiurl}/products`;
-    
+
 
         try {
             const response = await fetch(url, {
@@ -195,5 +195,43 @@ export class StellarScrape {
             throw new Error('Failed to fetch product data');
         }
     }
+
+
+
+     /**
+* Transform an img id into an usable link
+* @param imageId An image id of image ids
+* @param quality The quality. either "small", "medium", "large", "full" or a number between 1 and 1000
+* @returns An amazon image link
+*/
+
+     getImageLink(imageId:string, quality:ImageQuality):string{
+        
+        const binds = {
+            "small": "_AC_SL100_",
+            "medium": "_AC_SL500_",
+            "large": "_AC_SL800_",
+            "full": "_AC_SL1000_"
+        }
+
+
+        if(typeof quality === "number"){
+            return `https://m.media-amazon.com/images/I/${imageId}._AC_${quality}_.jpg`
+        }else if(!binds[quality]){
+
+            return `https://m.media-amazon.com/images/I/${imageId}._AC_SL1000_.jpg`
+        }
+        else{
+        const imgUrl = `https://m.media-amazon.com/images/I/${imageId}.${binds[quality]}.jpg`
+
+
+        return imgUrl
+    }
+
+    }
 }
+
+
+
+
 
