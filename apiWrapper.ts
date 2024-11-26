@@ -112,6 +112,13 @@ export class StellarScrape {
                 },
                 body: JSON.stringify({ asin, countries, userCountry }),
             });
+            if (!response.ok) {
+                throw Error(`HTTP error! status: ${response.status}`);
+            }
+            // check if the response is json
+            if (!response.headers.get('content-type')?.includes('application/json')) {
+                throw Error('Response is not JSON');
+            }
             const data = await response.json();
             return data;
         } catch (error) {
@@ -149,6 +156,13 @@ export class StellarScrape {
                 },
                 body: JSON.stringify({ query, countries, userCountry, amount, startAt }),
             });
+            if (!response.ok) {
+                throw Error(`HTTP error! status: ${response.status}`);
+            }
+            // check if the response is json
+            if (!response.headers.get('content-type')?.includes('application/json')) {
+                throw Error('Response is not JSON');
+            }
             const data = await response.json();
             return data;
         } catch (error) {
@@ -188,6 +202,14 @@ export class StellarScrape {
                 },
                 body: JSON.stringify({ asinArray, countries, userCountry }),
             });
+            // check if the response is ok
+            if (!response.ok) {
+                throw Error(`HTTP error! status: ${response.status}`);
+            }
+            // check if the response is json
+            if (!response.headers.get('content-type')?.includes('application/json')) {
+                throw Error('Response is not JSON');
+            }
             const data = await response.json();
             return data;
         } catch (error) {
