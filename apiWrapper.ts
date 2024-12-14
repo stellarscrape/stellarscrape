@@ -1,5 +1,5 @@
 
-let apiurl = "https://api.stellarscrape.com/v1/amazon"
+let apiurl = "https://api.stellarscrape.com/amazon"
 
 
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
