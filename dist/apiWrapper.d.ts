@@ -1,16 +1,10 @@
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be";
-export type ImageQuality = "small" | "medium" | "large" | "full" | number;
 export type DefaultApiResponse<T extends string, D> = {
     status: number;
-    data: {
-        [key in T]: D;
-    } & {
-        clientName: string;
-        tokensLeft: number;
-        tokensUsed: number;
-        responseTime: number;
-    };
-    message: string;
+    data: D;
+    tokensLeft: number;
+    tokensUsed: number;
+    responseTime: number;
 };
 export type searchData = {
     query: string;
@@ -22,6 +16,12 @@ export type searchData = {
 };
 export type productsData = {
     asin: string;
+    productData: productData[];
+};
+export type multipleProductsData = {
+    productsData: productsData[];
+};
+export type simpleProductData = {
     productData: productData[];
 };
 export type productData = {
@@ -58,13 +58,14 @@ export type productData = {
 };
 export declare class StellarScrape {
     private apikey;
+    private apiurl;
     /**
    * Constructor to initialize the base URL and API key
-   * @param baseURL The base URL of the API
+   * @param Platform The platform for the api
    * @param apiKey The API key for authorization
    * @returns A confirmtion message
    */
-    constructor(apikey: string);
+    constructor(apikey: string, platform: "amazon");
     /**
   * Fetch product details from the API
   * @param asin The ASIN of the product
@@ -72,7 +73,7 @@ export declare class StellarScrape {
   * @param fromcountry The country of origin
   * @returns A promise resolving to the product data
   */
-    getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', productData[]>>;
+    getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', simpleProductData>>;
     /**
    * Search on amazon for multiple products, in multiple countries
    * @param query What to search for
@@ -88,12 +89,5 @@ export declare class StellarScrape {
 * @param fromcountry The country of origin
 * @returns A promise resolving to the product data
 */
-    getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productsData', productsData[]>>;
-    /**
-* Transform an img id into an usable link
-* @param imageId An image id of image ids
-* @param quality The quality. either "small", "medium", "large", "full" or a number between 1 and 1000
-* @returns An amazon image link
-*/
-    getImageLink(imageId: string, quality: ImageQuality): string;
+    getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productsData', multipleProductsData>>;
 }

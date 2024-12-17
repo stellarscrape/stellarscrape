@@ -1,22 +1,18 @@
 
-let apiurl = "https://api.stellarscrape.com/amazon"
 
+let baseApiurl = "https://api.stellarscrape.com"
 
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
 
+let supportedPlatform = ["amazon"]
 
-export type ImageQuality = "small" | "medium" | "large" | "full" |number
+/* export type ImageQuality = "small" | "medium" | "large" | "full" |number */
 export type DefaultApiResponse<T extends string, D> = {
     status: number
-    data: {
-        [key in T]: D
-    } & {
-        clientName: string,
-        tokensLeft: number,
-        tokensUsed: number,
-        responseTime: number,
-    },
-    message: string,
+    data: D
+    tokensLeft: number,
+    tokensUsed: number,
+    responseTime: number,
 }
 
 
@@ -38,6 +34,13 @@ export type productsData = {
     productData: productData[],
 }
 
+export type multipleProductsData = {
+    productsData: productsData[],
+}
+
+export type simpleProductData = {
+    productData: productData[],
+}
 export type productData = {
     price: number,
     deliveryPrice: number,
@@ -77,18 +80,21 @@ export class StellarScrape {
 
 
     private apikey: string;
+    private apiurl: string;
 
     /**
    * Constructor to initialize the base URL and API key
-   * @param baseURL The base URL of the API
+   * @param Platform The platform for the api
    * @param apiKey The API key for authorization
    * @returns A confirmtion message
    */
-    constructor(apikey: string) {
-
+    constructor(apikey: string, platform: "amazon") {
+        if (!supportedPlatform.includes(platform)) {
+            throw new Error(`Unsupported platform: ${platform}`);
+        }
+        this.apiurl = `${baseApiurl}/${platform}`;
         this.apikey = apikey;
-
-    }
+        }
 
 
     /**
@@ -98,9 +104,9 @@ export class StellarScrape {
   * @param fromcountry The country of origin
   * @returns A promise resolving to the product data
   */
-    async getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', productData[]>> {
+    async getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', simpleProductData>> {
 
-        const url = `${apiurl}/product`;
+        const url = `${this.apiurl}/product`;
         console.log(url);
 
         try {
@@ -146,7 +152,7 @@ export class StellarScrape {
         startAt = startAt ?? 0;
 
 
-        const url = `${apiurl}/search`;
+        const url = `${this.apiurl}/search`;
         try {
             const response = await fetch(url, {
                 method: 'POST',
@@ -182,7 +188,7 @@ export class StellarScrape {
 * @param fromcountry The country of origin
 * @returns A promise resolving to the product data
 */
-    async getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productsData', productsData[]>> {
+    async getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productsData', multipleProductsData>> {
         if (asinArray.length > 100) {
             throw Error("To much asin, the limit is 100 asin per requests")
         }
@@ -190,7 +196,7 @@ export class StellarScrape {
             throw Error("Missing one or more parameters")
         }
 
-        const url = `${apiurl}/products`;
+        const url = `${this.apiurl}/products`;
 
 
         try {
@@ -226,7 +232,7 @@ export class StellarScrape {
 * @param quality The quality. either "small", "medium", "large", "full" or a number between 1 and 1000
 * @returns An amazon image link
 */
-
+/* 
      getImageLink(imageId:string, quality:ImageQuality):string{
         
         const binds = {
@@ -250,7 +256,7 @@ export class StellarScrape {
         return imgUrl
     }
 
-    }
+    } */
 }
 
 

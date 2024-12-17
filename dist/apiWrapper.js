@@ -10,16 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StellarScrape = void 0;
-let apiurl = "https://api.stellarscrape.com/amazon";
+let baseApiurl = "https://api.stellarscrape.com";
+let supportedPlatform = ["amazon"];
 // verif si bien asin et en plus faut verif si pas plus de 100 asin dans bulk. Modifier prix asin bulk
 class StellarScrape {
     /**
    * Constructor to initialize the base URL and API key
-   * @param baseURL The base URL of the API
+   * @param Platform The platform for the api
    * @param apiKey The API key for authorization
    * @returns A confirmtion message
    */
-    constructor(apikey) {
+    constructor(apikey, platform) {
+        if (!supportedPlatform.includes(platform)) {
+            throw new Error(`Unsupported platform: ${platform}`);
+        }
+        this.apiurl = `${baseApiurl}/${platform}`;
         this.apikey = apikey;
     }
     /**
@@ -32,7 +37,7 @@ class StellarScrape {
     getAmazonProduct(asin, countries, userCountry) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const url = `${apiurl}/product`;
+            const url = `${this.apiurl}/product`;
             console.log(url);
             try {
                 const response = yield fetch(url, {
@@ -72,7 +77,7 @@ class StellarScrape {
             // Set default values inside the function if not provided
             amount = amount !== null && amount !== void 0 ? amount : 10;
             startAt = startAt !== null && startAt !== void 0 ? startAt : 0;
-            const url = `${apiurl}/search`;
+            const url = `${this.apiurl}/search`;
             try {
                 const response = yield fetch(url, {
                     method: 'POST',
@@ -114,7 +119,7 @@ class StellarScrape {
             if (!asinArray || !countries || !userCountry) {
                 throw Error("Missing one or more parameters");
             }
-            const url = `${apiurl}/products`;
+            const url = `${this.apiurl}/products`;
             try {
                 const response = yield fetch(url, {
                     method: 'POST',
@@ -140,30 +145,6 @@ class StellarScrape {
                 throw new Error('Failed to fetch product data');
             }
         });
-    }
-    /**
-* Transform an img id into an usable link
-* @param imageId An image id of image ids
-* @param quality The quality. either "small", "medium", "large", "full" or a number between 1 and 1000
-* @returns An amazon image link
-*/
-    getImageLink(imageId, quality) {
-        const binds = {
-            "small": "_AC_SL100_",
-            "medium": "_AC_SL500_",
-            "large": "_AC_SL800_",
-            "full": "_AC_SL1000_"
-        };
-        if (typeof quality === "number") {
-            return `https://m.media-amazon.com/images/I/${imageId}._AC_${quality}_.jpg`;
-        }
-        else if (!binds[quality]) {
-            return `https://m.media-amazon.com/images/I/${imageId}._AC_SL1000_.jpg`;
-        }
-        else {
-            const imgUrl = `https://m.media-amazon.com/images/I/${imageId}.${binds[quality]}.jpg`;
-            return imgUrl;
-        }
     }
 }
 exports.StellarScrape = StellarScrape;
