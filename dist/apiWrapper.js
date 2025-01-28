@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StellarScrape = void 0;
-let baseApiurl = "https://api.stellarscrape.com";
+let baseApiurl = "https://beta_api.stellarscrape.com";
 let supportedPlatform = ["amazon"];
 // verif si bien asin et en plus faut verif si pas plus de 100 asin dans bulk. Modifier prix asin bulk
 class StellarScrape {
@@ -32,10 +32,12 @@ class StellarScrape {
   * @param asin The ASIN of the product
   * @param countries The list of countries
   * @param fromcountry The country of origin
+  * @param advancedScrape If the scrape should be including product info and stuff (true)
+  * @param advancedUserCountry If the user country should be included in the scrape (true)
   * @returns A promise resolving to the product data
   */
-    getAmazonProduct(asin, countries, userCountry) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getAmazonProduct(asin_1, countries_1, userCountry_1) {
+        return __awaiter(this, arguments, void 0, function* (asin, countries, userCountry, advancedScrape = true, advancedUserCountry = true) {
             var _a;
             const url = `${this.apiurl}/product`;
             console.log(url);
@@ -46,7 +48,7 @@ class StellarScrape {
                         "Authorization": this.apikey,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ asin, countries, userCountry }),
+                    body: JSON.stringify({ asin, countries, userCountry, advancedScrape, advancedUserCountry }),
                 });
                 if (!response.ok) {
                     throw Error(`HTTP error! status: ${response.status}`);

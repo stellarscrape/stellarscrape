@@ -42,9 +42,9 @@ export type productData = {
     name: string;
     weight: number;
     brand: string;
-    reviews: number;
-    unitsSold: number;
-    variations: {
+    reviews?: number;
+    unitsSold?: number;
+    variations?: {
         name: string;
         selected: number;
         options: {
@@ -53,7 +53,7 @@ export type productData = {
             selected: boolean;
         }[];
     }[];
-    userComments: string[];
+    userComments?: string[];
     lastUpdated: Date;
 };
 export declare class StellarScrape {
@@ -71,9 +71,11 @@ export declare class StellarScrape {
   * @param asin The ASIN of the product
   * @param countries The list of countries
   * @param fromcountry The country of origin
+  * @param advancedScrape If the scrape should be including product info and stuff (true)
+  * @param advancedUserCountry If the user country should be included in the scrape (true)
   * @returns A promise resolving to the product data
   */
-    getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', simpleProductData>>;
+    getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry, advancedScrape?: boolean | undefined, advancedUserCountry?: boolean | undefined): Promise<DefaultApiResponse<'productData', simpleProductData>>;
     /**
    * Search on amazon for multiple products, in multiple countries
    * @param query What to search for

@@ -1,6 +1,7 @@
 
 
-let baseApiurl = "https://api.stellarscrape.com"
+let baseApiurl = "https://beta_api.stellarscrape.com"
+//let baseApiurl = "https://api.stellarscrape.com"
 
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
 
@@ -59,9 +60,9 @@ export type productData = {
     name: string,
     weight: number,
     brand: string,
-    reviews: number,
-    unitsSold: number,
-    variations: {
+    reviews?: number,
+    unitsSold?: number,
+    variations?: {
         name: string,
         selected: number,
         options: {
@@ -70,7 +71,7 @@ export type productData = {
             selected: boolean,
         }[]
     }[],
-    userComments: string[]
+    userComments?: string[]
     lastUpdated: Date
 
 }
@@ -102,9 +103,11 @@ export class StellarScrape {
   * @param asin The ASIN of the product
   * @param countries The list of countries
   * @param fromcountry The country of origin
+  * @param advancedScrape If the scrape should be including product info and stuff (true)
+  * @param advancedUserCountry If the user country should be included in the scrape (true)
   * @returns A promise resolving to the product data
   */
-    async getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productData', simpleProductData>> {
+    async getAmazonProduct(asin: string, countries: supportedCountry[], userCountry: supportedCountry, advancedScrape:boolean | undefined=true,advancedUserCountry:boolean | undefined=true, ): Promise<DefaultApiResponse<'productData', simpleProductData>> {
 
         const url = `${this.apiurl}/product`;
         console.log(url);
@@ -116,7 +119,7 @@ export class StellarScrape {
                     "Authorization": this.apikey,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ asin, countries, userCountry }),
+                body: JSON.stringify({ asin, countries, userCountry, advancedScrape, advancedUserCountry }),
             });
             if (!response.ok) {
                 throw Error(`HTTP error! status: ${response.status}`);
