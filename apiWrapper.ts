@@ -1,13 +1,13 @@
 
 
-let baseApiurl = "https://beta_api.stellarscrape.com"
-//let baseApiurl = "https://api.stellarscrape.com"
+//let baseApiurl = "https://beta_api.stellarscrape.com"
+let baseApiurl = "https://api.stellarscrape.com"
 
 export type supportedCountry = "fr" | "de" | "it" | "es" | "co.uk" | "com.be"
 
 let supportedPlatform = ["amazon"]
 
-/* export type ImageQuality = "small" | "medium" | "large" | "full" |number */
+export type ImageQuality = "small" | "medium" | "large" | "full" |number
 export type DefaultApiResponse<T extends string, D> = {
     status: number
     data: D
@@ -148,7 +148,8 @@ export class StellarScrape {
         countries: supportedCountry[],
         userCountry: supportedCountry,
         amount?: number,
-        startAt?: number
+        startAt?: number,
+        advancedScrape:boolean | undefined=true,advancedUserCountry:boolean | undefined=true,
     ): Promise<DefaultApiResponse<'searchData', searchData>> {
         // Set default values inside the function if not provided
         amount = amount ?? 10;
@@ -163,7 +164,7 @@ export class StellarScrape {
                     "Authorization": this.apikey,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ query, countries, userCountry, amount, startAt }),
+                body: JSON.stringify({ query, countries, userCountry, amount, startAt, advancedScrape, advancedUserCountry }),
             });
             if (!response.ok) {
                 throw Error(`HTTP error! status: ${response.status}`);
@@ -191,7 +192,7 @@ export class StellarScrape {
 * @param fromcountry The country of origin
 * @returns A promise resolving to the product data
 */
-    async getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry): Promise<DefaultApiResponse<'productsData', multipleProductsData>> {
+    async getAmazonMultipleProducts(asinArray: string[], countries: supportedCountry[], userCountry: supportedCountry, advancedScrape:boolean | undefined=true,advancedUserCountry:boolean | undefined=true,): Promise<DefaultApiResponse<'productsData', multipleProductsData>> {
         if (asinArray.length > 100) {
             throw Error("To much asin, the limit is 100 asin per requests")
         }
@@ -209,7 +210,7 @@ export class StellarScrape {
                     "Authorization": this.apikey,
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ asinArray, countries, userCountry }),
+                body: JSON.stringify({ asinArray, countries, userCountry , advancedScrape, advancedUserCountry}),
             });
             // check if the response is ok
             if (!response.ok) {
@@ -235,7 +236,7 @@ export class StellarScrape {
 * @param quality The quality. either "small", "medium", "large", "full" or a number between 1 and 1000
 * @returns An amazon image link
 */
-/* 
+
      getImageLink(imageId:string, quality:ImageQuality):string{
         
         const binds = {
@@ -259,7 +260,7 @@ export class StellarScrape {
         return imgUrl
     }
 
-    } */
+    }
 }
 
 
